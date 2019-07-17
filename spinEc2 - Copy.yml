@@ -1,0 +1,27 @@
+---
+
+- name: run the playbook tasks on the localhost
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+  vars_files: 
+   - accs_k.yml
+  
+#added comment
+  tasks:
+    - name: print out the hostname of target
+      command: hostname
+
+    - name: create ec2 instance
+      ec2:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        group: "{{ security_group }}"
+        instance_type: "{{ instance_type }}"
+        instance_tags: '{"Name":"{{ tagName }}"}'
+        image: "{{ image }}"
+        wait: true 
+        region: "{{ region }}"
+        keypair: "{{ keypair }}"
+        count: "{{count}}"
+      register: ec2
